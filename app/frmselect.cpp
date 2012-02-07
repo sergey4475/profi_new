@@ -54,6 +54,7 @@ void frmSelect::Updater(){
             tabl->setFilter("USLUGI.VID_USLUGI="+ QString("%1").arg(type_uslugi_));
         //tabl->setFilter("ID NOT IN ("+mass+")");
         tabl->select();
+        tabl->sort(1,Qt::AscendingOrder);
         tabl->setHeaderData(0,Qt::Horizontal,tr("ID"));
         tabl->setHeaderData(1,Qt::Horizontal,tr("Наименование"));
         tabl->setHeaderData(2,Qt::Horizontal,tr("Цена"));
@@ -72,6 +73,7 @@ void frmSelect::Updater(){
         tabl->setTable("MATERIALS");
         tabl->setRelation(3,QSqlRelation("ed_izm","id","name"));
         tabl->select();
+        tabl->sort(1,Qt::AscendingOrder);
         tabl->setHeaderData(0,Qt::Horizontal,QObject::tr("Код"));
         tabl->setHeaderData(1,Qt::Horizontal,QObject::tr("Наименование"));
         tabl->setHeaderData(2,Qt::Horizontal,QObject::tr("DEL"));
@@ -118,7 +120,8 @@ void frmSelect::Updater(){
                             "GROUP BY "
                             "   materials.NAME, "
                             "   materials.ID, "
-                            "   ed_izm.name ");
+                            "   ed_izm.name "
+                            "ORDER BY materials.NAME ASC ");
             }else{
                 sql.prepare("SELECT "
                             "   materials.ID, "
@@ -136,7 +139,8 @@ void frmSelect::Updater(){
                             "GROUP BY "
                             "   materials.NAME, "
                             "   materials.ID, "
-                            "   ed_izm.name ");
+                            "   ed_izm.name "
+                            "ORDER BY materials.NAME ASC ");
                 sql.bindValue(":type_uslugi",type_uslugi_);
             }
         }else
@@ -157,7 +161,8 @@ void frmSelect::Updater(){
                             "GROUP BY "
                             "   materials.NAME, "
                             "   materials.ID,"
-                            "   ed_izm.name ");
+                            "   ed_izm.name "
+                            "ORDER BY materials.NAME ASC ");
                 sql.bindValue(":VidZatrat",type_uslugi_);
             }else{
                 sql.prepare("SELECT "
@@ -175,7 +180,8 @@ void frmSelect::Updater(){
                             "GROUP BY "
                             "   materials.NAME, "
                             "   materials.ID,"
-                            "   ed_izm.name ");
+                            "   ed_izm.name "
+                            "ORDER BY materials.NAME ASC ");
             }
 
         sql.bindValue(":DATE",DateDoc.toString("dd.MM.yyyy"));
@@ -196,7 +202,7 @@ void frmSelect::Updater(){
         tempModel->setHeaderData(0,Qt::Horizontal,tr("ФИО"));  //1
 
         QSqlQuery sql;
-        sql.prepare("select FIO, POL FROM clients");
+        sql.prepare("select FIO, POL FROM clients ORDER BY FIO");
         sql.exec();
 
         selTabl = new clSqlQueryModel;
@@ -208,21 +214,24 @@ void frmSelect::Updater(){
     }
     ////////////////// Выбор мастера ////////////////
     if (type_select == n_MASTER){
+        ui->all_sotr->setVisible(true);
         setWindowTitle("Выберите мастера...");
         tempModel->insertColumn(0);
         tempModel->setHeaderData(0,Qt::Horizontal,tr("ФИО"));  //1
 
         QSqlQuery sql;
-        if (type_uslugi_ != 5){
+        if (type_uslugi_ != 5 && ui->all_sotr->checkState() == false){
             sql.prepare("SELECT Personal.FIO, "
                         " Personal.POL "
                         "FROM Personal INNER JOIN DOLJNOSTI ON Personal.DOLJN = DOLJNOSTI.ID "
-                        "WHERE DOLJNOSTI.VID_USLUGI = :Vid" );
+                        "WHERE DOLJNOSTI.VID_USLUGI = :Vid "
+                        "ORDER BY Personal.FIO");
             sql.bindValue(":VID",type_uslugi_);
         }else{
             sql.prepare("SELECT Personal.FIO, "
                         " Personal.POL "
-                        "FROM Personal INNER JOIN DOLJNOSTI ON Personal.DOLJN = DOLJNOSTI.ID ");
+                        "FROM Personal INNER JOIN DOLJNOSTI ON Personal.DOLJN = DOLJNOSTI.ID "
+                        "ORDER BY Personal.FIO");
         }
         sql.exec();
 
@@ -309,9 +318,10 @@ void frmSelect::init(QDate date){
     this->setWindowFlags(Qt::Tool);
     this->setWindowModality(Qt::ApplicationModal);
     DateDoc = date;
-    Updater();
-
+    ui->all_sotr->setChecked(true);
+    ui->all_sotr->setVisible(false);
     ui->all_ostatki->setVisible(false);
+    Updater();
 }
 
 void frmSelect::multeSelect(const QModelIndexList &indexList){
@@ -513,4 +523,9 @@ void frmSelect::on_sel_button_clicked()
     multeSelect(ui->tableView->selectionModel()->selectedRows());
     //    on_tableView_doubleClicked(ui->tableView->currentIndex());
     this->close();
+}
+
+void frmSelect::on_all_sotr_stateChanged(int arg1)
+{
+    Updater();
 }

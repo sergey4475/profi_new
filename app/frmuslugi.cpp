@@ -22,7 +22,8 @@ void frmUslugi::update_tree(){
                 "       GROUP_USLUGI.NAME AS GR, "
                 "       GROUP_USLUGI.ID AS ID_GR "
                 "FROM VID_USLUG LEFT JOIN GROUP_USLUGI ON "
-                "     VID_USLUG.ID = GROUP_USLUGI.VID_USLUGI");
+                "     VID_USLUG.ID = GROUP_USLUGI.VID_USLUGI "
+                "ORDER BY VID_USLUG.NAME, GROUP_USLUGI.NAME");
 
     QString vid_uslugi = "", group ="";
     int id_vid_uslugi, id_group = 0;
@@ -71,12 +72,14 @@ void frmUslugi::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
         tabl->setTable("USLUGI");
         tabl->setFilter("VID_USLUGI="+idVID);
         tabl->select();
+        tabl->sort(1,Qt::AscendingOrder);
     }else{
         qDebug() << "2";
         tabl->setTable("USLUGI");
         tabl->setFilter("VID_USLUGI="+idVID);
         tabl->setFilter("PARENT="+idGR);
         tabl->select();
+        tabl->sort(1,Qt::AscendingOrder);
     }
     ui->tableUslugi->setModel(tabl);
     ui->tableUslugi->horizontalHeader()->setResizeMode(QHeaderView::Stretch);

@@ -45,14 +45,27 @@
   <widget class="QCheckBox" name="all_ostatki">
    <property name="geometry">
     <rect>
-     <x>8</x>
-     <y>8</y>
+     <x>10</x>
+     <y>0</y>
      <width>153</width>
      <height>18</height>
     </rect>
    </property>
    <property name="text">
     <string>Показывать все остатки</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="all_sotr">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>16</y>
+     <width>171</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Показать всех сотрудников</string>
    </property>
   </widget>
  </widget>

@@ -40,6 +40,8 @@ private slots:
 
     void on_sel_button_clicked();
 
+    void on_all_sotr_stateChanged(int arg1);
+
 private:
     Ui::frmSelect *ui;
     void multeSelect(const QModelIndexList &indexList);
